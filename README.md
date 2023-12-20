@@ -3,22 +3,31 @@ This repository contains scripts for SureQuant mass spec method building for ana
 
 ## Installation
 
-Run the following to download the code: 
-'''
-  git clone https://github.com/oleddy/SureQuant_MHC.git
-'''
+Run the following in the command line to download the code: 
+~~~
+git clone https://github.com/oleddy/SureQuant_MHC.git
+~~~
 
-Install all dependencies by running
-'''
-  pip install -r requirements.txt
-'''
+Install all dependencies as follows:
+~~~
+pip install -r requirements.txt
+~~~
+
 Code was tested with Python 3.11.3 on macOS 12.0.1
 
 ## Method Building
 
 To generate the tables you will need to build your instrument method, start with a report exported from Skyline containing data from a survey run including only the stable isotope labeled (SIL) trigger peptides for your SureQuant panel. An example can be found in method_building/example_inputs.
 
-The generate_method_tables.py script takes four arguments:
+The generate_method_tables.py script takes the following arguments:
+|Flag |Definition|Required? (Y/N)|
+|:--- |:--- |:---|
+|-i|The path to the input data (a Survey_Run_Results report exported from Skyline)|Y|
+|-o|The path to a directory where the output should be generated|Y|
+|-l|A comma-spearated list of the SIL label mass offsets (in Daltons) that occur among your set of targets (e.g., "-l 6,7")|Y|
+|-c|A comma-separated list of the charge states that occur among your set of targets (e.g., "-c 2,3"). Default value is "2,3".|N|
+|-n|The number of fragment ions in each pseudospectrum. Must be an integer, not greater than the number of fragment ions per peptide in your spectral library. Default value is 6.|N|
+
 
 
 ## Relative Quantification
