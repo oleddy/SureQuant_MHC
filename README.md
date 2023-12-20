@@ -41,12 +41,12 @@ python3 generate_method_tables.py -i ./example_inputs/Survey_Results_Review.csv 
 To compute the normalized, hipMHC-corrected relative intensities of target peptides in a relative quantification SureQuant MHC analysis, start with a report exported from Skyline
 that contains the following fields: 
 
-Isotope Label Type
-Modified Sequence
-Fragment Ion
-Precursor Charge
-Replicate
-Peptide Modified Sequence
+Isotope Label Type  
+Modified Sequence  
+Fragment Ion  
+Precursor Charge  
+Replicate  
+Peptide Modified Sequence  
 Area
 
 The `SQ_relative_quantification` script takes the following command line arguments
@@ -99,12 +99,12 @@ An example of a full table can be found under `relative_quantification/example_i
 ## Absolute Quantification
 To analyze absolute quantification of a peptide of interest, start with a Skyline report containing the following fields: 
 
-Fragment Ion
-Modified Sequence
-Product Mz
-Peak Rank
-Height
-Replicate
+Fragment Ion  
+Modified Sequence  
+Product Mz  
+Peak Rank  
+Height  
+Replicate  
 
 The `Absolute_quant.py` script takes the following arguments:
 |Flag |Definition|Required? (Y/N)|
