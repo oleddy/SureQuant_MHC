@@ -12,7 +12,7 @@ Install all dependencies as follows:
 ~~~
 pip install -r requirements.txt
 ~~~
-Using a virtual environment to install dependencies and run the code is recommended. 
+Using a virtual environment to install dependencies and run the code is recommended. Cloning the repository and installing all dependencies should take on the order of 1-2 minutes. All scripts should take no more than 1-2 minutes to execute on a typical personal computer. 
 
 Code was tested with Python 3.11.3 on macOS 12.0.1
 
