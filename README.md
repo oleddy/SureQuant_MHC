@@ -16,7 +16,7 @@ Using a virtual environment to install dependencies and run the code is recommen
 
 Code was tested with Python 3.11.3 on macOS 12.0.1
 
-A detailed description of what each script does can be found in the Procedure section of the paper. 
+A detailed description of what each script does can be found in the Procedure section of the paper. Below, you can find information on how to format inputs and command line arguments. 
 
 ## Method Building
 
@@ -61,27 +61,69 @@ The `SQ_relative_quantification` script takes the following command line argumen
 
 The script will generate two tables. One contains the final normalized, hipMHC corrected intensities for the target peptides. The other contains the individual correction factors computed for each hipMHC, for each experimental condition. In calculating the normalized relative intensities of the target peptides, the correction factors for the individual hipMHCs are averaged to obtain the overall correction factor for a given experimental condition. 
 
-To generate 
+To generate the example outputs from the example input, run the following in the `relative_quantification` directory:
+~~~
+python3 SQ_relative_quantification.py -o ./example_outputs -s ./example_inputs/hipMHC_table.csv -t ./example_inputs/target_list.csv -d ./example_inputs/Skyline_report_TAP.csv -c ./example_inputs/conditions_table_TAP.csv
+~~~
 
-More detail on the inputs is provided below. 
+### Input tables
 
-### hipMHC standard table
+#### hipMHC standard table
 Since Skyline will assing both the "light" (1x SIL labeled) hipMHC and the corresponding "heavy" (2x labeled) trigger peptide the label type "heavy," the hipMHC standards table has to separately specify the modified and labeled sequence of the hipMHC peptide and its corresponding trigger peptide. The table has the following columns (one example row is shown):
 
+|Light Annotated Seq|Heavy Annotated Seq|Charge|
+|:--- |:--- |:---|
+|ALNEQIARL\[+6\]|AL\[+7\]NEQIARL\[+6\]|2|
+
 An example of a full table can be found under `relative_quantification/example_inputs`. 
 
-### Target peptide table
+#### Target peptide table
 The target peptide table specifies the sequence and charge state of each target to be quantified as follows:
 
+|Peptide|Charge|
+|:--- |:--- |
+|LLDEGKQSL|2|
+
 An example of a full table can be found under `relative_quantification/example_inputs`. 
 
-### Experimental conditions table
+#### Experimental conditions table
 The experimental conditions table lists which mass spec runs should be included in the quantification and includes a Boolean column to indicate which condition should be considered the reference for normalization (defined to have relative intensity = 1). 
 
 The table has the following columns (one example row is shown):
+|Filename|Condition|Reference|
+|:--- |:--- |:---|
+|080623_THP_SQ_WT_H37Rv|WT +H37Rv|TRUE|
 
 An example of a full table can be found under `relative_quantification/example_inputs`. 
 
 ## Absolute Quantification
 To analyze absolute quantification of a peptide of interest, start with a Skyline report containing the following fields: 
 
+Fragment Ion
+Modified Sequence
+Product Mz
+Peak Rank
+Height
+Replicate
+
+The `Absolute_quant.py` script takes the following arguments:
+|Flag |Definition|Required? (Y/N)|
+|:--- |:--- |:---|
+|`--dir`|The working directory|Y|
+|`--file`|The input Skyline report CSV file|Y|
+|`--output`|Linear regression plot name|Y|
+|`--rep`|Replicate name of the sample to quantify (same as the original raw mass spec data file name, unless changed in Skyline)|Y|
+|`--light`|Modified (if applicable) sequence of the endogenous peptide|Y|
+|`--H1`|Labeled and modified sequence of the first hipMHC standard peptide|Y|
+|`--H2`|Labeled and modified sequence of the second hipMHC standard peptide|Y|
+|`--H3`|Labeled and modified sequence of the third hipMHC standard peptide|Y|
+|`--input`|Maximum hipMHC spike-in amount in fmol.|Y|
+
+A 10x dilution series of hipMHC standards is assumed (so if `--input` is 100 fmol, then the 1H, 2H, and 3H standards are assumed to have been spiked in at a molar amount of 1 fmol, 10 fmol, and 100 fmol respectively.   
+
+To generate the example outputs from the example input, run the following in the `absolute_quantification` directory: 
+~~~
+python ./Absolute_quant.py --file ./example_inputs/Absolute_Quantification_Report.csv --rep spleenocyte_pulsed_SQ_20231004 --output std_curve --cell 5 --light ITYTWTRL --H1 IT[+5]YTWTRL --H2 IT[+5]YT[+5]WTRL --H3 IT[+5]YT[+5]WT[+5]RL --dir . --input 100
+~~~
+
+For additional questions or support, please contact owenl \[at\] mit \[dot\] edu. 
