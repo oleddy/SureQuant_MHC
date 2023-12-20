@@ -12,24 +12,76 @@ Install all dependencies as follows:
 ~~~
 pip install -r requirements.txt
 ~~~
+Using a virtual environment to install dependencies and run the code is recommended. 
 
 Code was tested with Python 3.11.3 on macOS 12.0.1
 
+A detailed description of what each script does can be found in the Procedure section of the paper. 
+
 ## Method Building
 
-To generate the tables you will need to build your instrument method, start with a report exported from Skyline containing data from a survey run including only the stable isotope labeled (SIL) trigger peptides for your SureQuant panel. An example can be found in method_building/example_inputs.
+To generate the tables you will need to build your instrument method, start with a report exported from Skyline containing data from a survey run including only the stable isotope labeled (SIL) trigger peptides for your SureQuant panel. An example can be found in `method_building/example_inputs`.
 
-The generate_method_tables.py script takes the following arguments:
+The `generate_method_tables.py` script takes the following command line arguments:
 |Flag |Definition|Required? (Y/N)|
 |:--- |:--- |:---|
-|-i|The path to the input data (a Survey_Run_Results report exported from Skyline)|Y|
-|-o|The path to a directory where the output should be generated|Y|
-|-l|A comma-spearated list of the SIL label mass offsets (in Daltons) that occur among your set of targets (e.g., "-l 6,7")|Y|
-|-c|A comma-separated list of the charge states that occur among your set of targets (e.g., "-c 2,3"). Default value is "2,3".|N|
-|-n|The number of fragment ions in each pseudospectrum. Must be an integer, not greater than the number of fragment ions per peptide in your spectral library. Default value is 6.|N|
+|`-i`|The path to the input data (a Survey_Run_Results report CSV file exported from Skyline)|Y|
+|`-o`|The path to a directory where the output should be generated|Y|
+|`-l`|A comma-spearated list of the SIL label mass offsets (in Daltons) that occur among your set of targets (e.g., `-l 6,7`)|Y|
+|`-c`|A comma-separated list of the charge states that occur among your set of targets (e.g., `-c 2,3`). Default value is "2,3".|N|
+|`-n`|The number of fragment ions in each pseudospectrum. Must be an integer, not greater than the number of fragment ions per peptide in your spectral library. Default value is 6.|N|
 
-
+Example output files can be found in `method_building/example_outputs`. To generate these outputs from the provided inputs, run the following in the `method_building` directory:
+~~~
+python3 generate_method_tables.py -i ./example_inputs/Survey_Results_Review.csv -o ./example_outputs -c 2,3 -l 6,7
+~~~
 
 ## Relative Quantification
 
+To compute the normalized, hipMHC-corrected relative intensities of target peptides in a relative quantification SureQuant MHC analysis, start with a report exported from Skyline
+that contains the following fields: 
+
+Isotope Label Type
+Modified Sequence
+Fragment Ion
+Precursor Charge
+Replicate
+Peptide Modified Sequence
+Area
+
+The `SQ_relative_quantification` script takes the following command line arguments
+|Flag |Definition|Required? (Y/N)|
+|:--- |:--- |:---|
+|`-d`|The path to the data (a CSV report exported from Skyline)|Y|
+|`-o`|The path to a directory where the output should be generated|Y|
+|`-s`|The path to a table of hipMHC standards to use for normalization (see below)|Y|
+|`-t`|The path to a table of target peptides|Y|
+|`-c`|The path to a table of experimental conditions|Y|
+|`-n`|The number of fragment ions to use for quantification (default value is 3)|N|
+
+The script will generate two tables. One contains the final normalized, hipMHC corrected intensities for the target peptides. The other contains the individual correction factors computed for each hipMHC, for each experimental condition. In calculating the normalized relative intensities of the target peptides, the correction factors for the individual hipMHCs are averaged to obtain the overall correction factor for a given experimental condition. 
+
+To generate 
+
+More detail on the inputs is provided below. 
+
+### hipMHC standard table
+Since Skyline will assing both the "light" (1x SIL labeled) hipMHC and the corresponding "heavy" (2x labeled) trigger peptide the label type "heavy," the hipMHC standards table has to separately specify the modified and labeled sequence of the hipMHC peptide and its corresponding trigger peptide. The table has the following columns (one example row is shown):
+
+An example of a full table can be found under `relative_quantification/example_inputs`. 
+
+### Target peptide table
+The target peptide table specifies the sequence and charge state of each target to be quantified as follows:
+
+An example of a full table can be found under `relative_quantification/example_inputs`. 
+
+### Experimental conditions table
+The experimental conditions table lists which mass spec runs should be included in the quantification and includes a Boolean column to indicate which condition should be considered the reference for normalization (defined to have relative intensity = 1). 
+
+The table has the following columns (one example row is shown):
+
+An example of a full table can be found under `relative_quantification/example_inputs`. 
+
 ## Absolute Quantification
+To analyze absolute quantification of a peptide of interest, start with a Skyline report containing the following fields: 
+
