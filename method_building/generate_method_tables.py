@@ -36,7 +36,7 @@ if __name__ == '__main__':
                 label_index = i
         ions = report.loc[report['Modified Sequence'] == peptide]
         unique_ion = ions.loc[ions['Fragment Ion'] == 'precursor']
-        charge_index = 0
+        charge_index = charges.index(unique_ion['Precursor Charge'].iloc[0])
         inclusion_dfs[label_index][charge_index] = pd.concat([inclusion_dfs[label_index][charge_index], unique_ion])
 
         ions = ions.loc[ions['Fragment Ion'] != 'precursor']
